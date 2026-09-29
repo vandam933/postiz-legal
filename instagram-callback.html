@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Instagram connection - Postiz</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: system-ui, sans-serif;
+      }
+
+      body {
+        box-sizing: border-box;
+        display: grid;
+        min-height: 100vh;
+        margin: 0;
+        padding: 1.25rem;
+        place-items: center;
+      }
+
+      main {
+        width: min(100%, 32rem);
+        padding: 1.5rem;
+        border: 1px solid #8886;
+        border-radius: 1rem;
+      }
+
+      h1 {
+        margin-top: 0;
+        font-size: 1.35rem;
+      }
+
+      p {
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Instagram connection</h1>
+      <p id="status" role="status" aria-live="polite">
+        Checking the authorization response…
+      </p>
+    </main>
+    <script>
+      (() => {
+        const postizCallback =
+          "https://deployment-audience-looksmart-residence.trycloudflare.com/integrations/social/instagram";
+        const query = window.location.search;
+        const fragment = window.location.hash;
+        const params = new URLSearchParams(query);
+        const status = document.getElementById("status");
+
+        if (!params.has("code") && !params.has("error")) {
+          status.textContent =
+            "No authorization code or error was returned. Return to Postiz and try connecting Instagram again.";
+          return;
+        }
+
+        const error = params.get("error_description") || params.get("error");
+        status.textContent = error
+          ? `Returning the authorization result to Postiz: ${error}`
+          : "Authorization received. Returning to Postiz…";
+
+        window.location.replace(postizCallback + query + fragment);
+      })();
+    </script>
+  </body>
+</html>
